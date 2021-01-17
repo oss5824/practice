@@ -32,5 +32,5 @@ int main()
 	for (int i = 0; i < num; i++)
 		cout << store[height[i]][width[i] - 1] << endl;
 	return 0;
-}
+} 
 
