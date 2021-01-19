@@ -1,46 +1,70 @@
 #include <iostream>
-#include <vector>
-#include <algorithm>
 #include <queue>
-#include <cstring>
 #include <utility>
+#include <algorithm>
+#include <cstring>
 using namespace std;
-int arr[1001];
-int M[1001];
-int n, m, vmin = 1000000;
-void bfs()
+int T, V, E;
+vector<int>* v;
+bool* visit;
+int* arr;
+void bfs(int num)
 {
 	queue<int>q;
-	q.push(n);
+	q.push(num);
+	int turn = 1;
 	while (!(q.empty()))
 	{
-		int pos = q.front();
+		int x = q.front();
 		q.pop();
-		arr[pos] = 1;
-		int move[3] = { 1,-1,pos };
-		for (int k = 0; k < 3; k++)
-		{
-			if (pos + move[k] < 0 || pos + move[k] >1000)continue;
-			if (arr[pos + move[k]] == 0)
+		int len = v[x].size();
+		if (arr[x] == 1)turn = 2;
+		else if (arr[x] == 2)turn = 1;
+		for (int i = 0; i < len; i++)
+			if (arr[v[x][i]] == 0)
 			{
-				arr[pos + move[k]] = 1;
-				M[pos + move[k]] = M[pos] + 1;
-				printf("pos : %d, pos+move : %d, M[pos+move] : %d\n", pos, pos + move[k], 
-					M[pos + move[k]]);
-				if (pos + move[k] == m)vmin = min(vmin, M[pos + move[k]]);
-				q.push(pos + move[k]);
+				arr[v[x][i]] = turn;
+				q.push(v[x][i]);
 			}
-		}
 	}
+}
+bool check(int num)
+{
+	for (int i = 1; i <= V; i++)
+	{
+		int len = v[i].size();
+		for (int j = 0; j < len; j++)if (arr[i] == arr[v[i][j]])return false;
+	}
+	return true;
 }
 int main()
 {
 	cin.tie(NULL);
 	ios::sync_with_stdio(false);
-	cin >> n >> m;
-	memset(arr, 0, sizeof(arr));
-	memset(M, 0, sizeof(M));
-	bfs();
-	printf("%d", vmin);
+	cin >> T;
+	for (int i = 0; i < T; i++)
+	{
+		cin >> V >> E;
+		v = new vector<int>[V + 1];
+		arr = new int[V + 1];
+		visit = new bool[V + 1];
+		memset(arr, 0, sizeof(int) * (V + 1));
+		memset(visit, false, sizeof(bool) * (V + 1));
+		for (int j = 0; j < E; j++)
+		{
+			int a, b;
+			cin >> a >> b;
+			if (a != b)
+			{
+				v[a].push_back(b);
+				v[b].push_back(a);
+			}
+		}
+		for (int j = 1; j <= V; j++)sort(v[j].begin(), v[j].end());
+		for (int j = 1; j <= V; j++)if (arr[j] == 0)bfs(j);
+		bool val = check(1);
+		if (val)printf("YES\n");
+		else printf("NO\n");
+	}
 	return 0;
 }
