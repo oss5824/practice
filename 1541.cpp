@@ -42,10 +42,7 @@ int main()
 			result += arr[i + 1];
 			i++;
 		}
-		printf("%d\n", result);
 	}
 	printf("%d", result);
 	return 0;
 }
-//#define MIN3(a,b,c) ((((a)<(b))&&((a)<(c)))? (a) : (((b)<(c))?(b) : (c)))
-//#define MAX(a,b) (((a)>(b)) ? (a) : (b))
