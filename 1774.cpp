@@ -1,50 +1,52 @@
 #include <iostream>
-#include <vector>
-#include <cmath>
-#include <queue>
-#include <map>
 #include <algorithm>
+#include <cmath>
+#include <vector>
+#include <map>
 using namespace std;
-vector<pair<int, long long>> v[1001];
-bool visit[1001];
-double result;
-void prim(int num)
+vector <pair<long double, pair<int, int>>>d;
+map<pair<int, int>, long double>dist;
+int level[1001];
+int arr[1001];
+long double result;
+int search(int num)
 {
-	visit[num] = true;
-	priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<pair<long long, int>>>pq;
-	int len = v[num].size();
-	for (int i = 0; i < len; i++)pq.push({ v[num][i].second, v[num][i].first });
-	while (!pq.empty())
-	{
-		int cur = pq.top().second;
-		long long cur_dist = pq.top().first;
-		pq.pop();
-		if (visit[cur])continue;
-		visit[cur] = true;
-		len = v[cur].size();
-		result += sqrt(cur_dist);
-		for (int i = 0; i < len; i++)pq.push({ v[cur][i].second ,v[cur][i].first });
-	}
+	if (num == arr[num])return num;
+	else return arr[num] = search(arr[num]);
+}
+int add(pair<long double, pair<int, int>>v)
+{
+	int a = v.second.first, b = v.second.second, x = search(a), y = search(b);
+	long double c = v.first;
+	if (x == y)return 1;
+	if (level[x] > level[y]) { int tmp = x; x = y; y = tmp; }
+	arr[x] = y; result += c;
+	if (level[x] == level[y])level[y]++;
+	return 0;
 }
 int main()
 {
 	cin.tie(NULL); ios::sync_with_stdio(false);
-	int n, m, len, start; cin >> n >> m;
-	vector<pair<long long, long long>>r;
-	r.push_back({ 0,0 });
-	for (int i = 0; i < n; i++) { long long a, b; cin >> a >> b; r.push_back({ a,b }); }
-	len = r.size();
+	int n, m; cin >> n >> m;
+	vector<pair<int, int>>v;
+	long double f; v.push_back({ 0,0 });
+	for (int i = 0; i < n; i++) { int a, b; cin >> a >> b; v.push_back({ a,b }); }
+	for (int i = 0; i < m; i++) { int a, b; cin >> a >> b; dist[make_pair(a, b)] = -1; }
+	int len = v.size();
 	for (int i = 1; i < len; i++)
+	{
+		arr[i] = i;
 		for (int j = i + 1; j < len; j++)
 		{
-			long long d = (r[i].first - r[j].first) * (r[i].first - r[j].first)
-				+ (r[i].second - r[j].second) * (r[i].second - r[j].second);
-			v[i].push_back({ j,d }); v[j].push_back({ i,d });
+			long double a;
+			a = (dist[make_pair(i, j)] != -1) ?
+				sqrt(powl((v[i].first - v[j].first), 2) + pow((v[i].second - v[j].second), 2)) : 0;
+			d.push_back({ a, { i,j } });
 		}
-	int a, b;
-	cin >> a >> b; start = a; v[a].push_back({ b, 0 }); v[b].push_back({ a, 0 });
-	for (int i = 1; i < m; i++) { cin >> a >> b; v[a].push_back({ b, 0 }); v[b].push_back({ a, 0 }); }
-	prim(start);
-	printf("%.2f", result);
+	}
+	sort(d.begin(), d.end());
+	len = d.size();
+	for (int i = 0; i < len; i++)add(d[i]);
+	printf("%.2lf", result);
 	return 0;
 }
