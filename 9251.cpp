@@ -17,4 +17,4 @@ int main()
 	cin.tie(NULL); cout.tie(NULL); ios::sync_with_stdio(false);
 	cin >> s1 >> s2; memset(M, -1, sizeof(M)); cout << LCS(s1.length(), s2.length());
 	return 0;
-}
+} 
