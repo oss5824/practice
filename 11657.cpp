@@ -1,58 +1,33 @@
-#include <iostream>
-#include <queue>
-#include <utility>
-#include <algorithm>
-#define INF 1e9
+#include<iostream>
+#include<vector>
+#include<queue>
 using namespace std;
-vector<pair<int, long long>>* v;
-long long* dist;
-int V, E;
-bool bellman()
-{
-	dist[1] = 0;
-	for (int i = 1; i <= V; i++)
-	{
-		for (int j = 1; j <= V; j++)
-		{
-			if (dist[j] == INF)continue;
-			int len = v[j].size();
-			long long cur_distance = dist[j];
-			for (int k = 0; k < len; k++)
-			{
-				int next = v[j][k].first;
-				long long next_distance = v[j][k].second;
-				if (dist[next] > cur_distance + next_distance)
-				{
-					dist[next] = cur_distance + next_distance;
-					if (i == V)return false;
-				}
-			}
-		}
-	}
-	return true;
-}
+#define INF 10e9
+typedef long long ll;
+vector<pair<int, ll>>v[501];
+ll dist[501];
+int cnt[501];
+bool visit[501];
 int main()
 {
-	cin.tie(NULL);
-	ios::sync_with_stdio(false);
-	cin >> V >> E;
-	v = new vector<pair<int, long long>>[V + 1];
-	dist = new long long[V + 1];
-	fill(dist, dist + V + 1, INF);
-	for (int i = 0; i < E; i++)
+	cin.tie(NULL); cout.tie(NULL); ios::sync_with_stdio(false);
+	int n, m, a, b, c; cin >> n >> m; fill(dist, dist + 501, INF);
+	while (m--) { cin >> a >> b >> c; v[a].push_back({ b,c }); }
+	queue<int>q; q.push(1); dist[1] = 0; visit[1] = true; cnt[1]++;
+	while (!q.empty())
 	{
-		int a, b, value;
-		cin >> a >> b >> value;
-		v[a].push_back(make_pair(b, value));
+		int cur = q.front(); q.pop(); visit[cur] = false;
+		for (pair<int, ll> next : v[cur])
+			if (dist[next.first] > dist[cur] + next.second)
+			{
+				dist[next.first] = dist[cur] + next.second;
+				if (!visit[next.first])
+				{
+					cnt[next.first]++; if (cnt[next.first] >= n) { cout << "-1"; return 0; }
+					q.push(next.first); visit[next.first] = true;
+				}
+			}
 	}
-	if (!bellman())printf("-1");
-	else
-	{
-		for (int i = 2; i <= V; i++)
-		{
-			if (dist[i] == INF)printf("-1\n");
-			else printf("%lld\n", dist[i]);
-		}
-	}
+	for (int i = 2; i <= n; i++)(dist[i] != INF) ? cout << dist[i] << "\n" : cout << "-1\n";
 	return 0;
 }
