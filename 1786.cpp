@@ -1,25 +1,25 @@
-#pragma warning(disable:4996)
-#include <iostream>
-#include <cstring>
-#include <vector>
-#define _CRT_SECURE_NO_WARNINGS
-char *T, P[1000001], token[100001];
+#include<iostream>
+#include<string>
+#include<vector>
 using namespace std;
-int main()
+string s1, s2;
+void search()
 {
-	cin.tie(NULL); cout.tie(NULL); ios::sync_with_stdio(false);
-	T = new char[1000001];
-	cin.getline(T, 1000001); 
-	cin.getline(P, sizeof(P));
-	int len_T = strlen(T), len_P = strlen(P), len = len_T - len_P + 1;
-	vector<int>v;
-	for (int i = 0; i < len; i++, T++)
-	{
-		strncpy(token, T, len_P);
-		if (!strcmp(token, P)) v.push_back(i + 1);
+	int len1 = s1.length(), len2 = s2.length();
+	vector<int>pi(len2, 0); vector<int>res;
+	for (int i = 1, j = 0; i < len2; i++) {
+		while (j != 0 && s2[i] != s2[j])j = pi[j - 1];
+		if (s2[i] == s2[j])pi[i] = ++j;
 	}
-	len = v.size();
-	cout << len << "\n";
-	for (int i = 0; i < len; i++)cout << v[i] << " ";
+	for (int i = 0, j = 0; i < len1; i++) {
+		while (j != 0 && s1[i] != s2[j])j = pi[j - 1];
+		if (s1[i] == s2[j] && j == len2 - 1) { res.push_back(i - j + 1); j = pi[j]; }
+		else if (s1[i] == s2[j])j++;
+	}
+	cout << res.size() << "\n"; for (int i : res)cout << i << " ";
+}
+int main() {
+	cin.tie(NULL); cout.tie(NULL); ios::sync_with_stdio(false);
+	getline(cin, s1); getline(cin, s2); search();
 	return 0;
 }
