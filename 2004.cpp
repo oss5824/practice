@@ -1,27 +1,19 @@
-#pragma warning(disable:4996)
-#include <iostream>
-#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
 using namespace std;
-int main()
+int n, m, a, b, check, arr[500001], level[500001];
+int search(int num) { if (arr[num] == num)return num; else return arr[num] = search(arr[num]); }
+bool merge(int x, int y)
 {
-	int n = 0, m = 0, store = 0, n_store = 0, k_store = 0;
-	cin >> n >> m;
-	for (int i = 1; i <= n; i++)
-	{
-		store = (i % 5 == 0) ? store + 1 : store;
-		store = (i % 25 == 0) ? store + 1 : store;
-		store = (i % 125 == 0) ? store + 1 : store;
-
-		n_store = (i % 5 == 0 && i <= m) ? n_store + 1 : n_store;
-		n_store = (i % 25 == 0 && i <= m) ? n_store + 1 : n_store;
-		n_store = (i % 125 == 0 && i <= m) ? n_store + 1 : n_store;
-
-		k_store = (i % 5 == 0 && i <= n - m) ? k_store + 1 : k_store;
-		k_store = (i % 25 == 0 && i <= n - m) ? k_store + 1 : k_store;
-		k_store = (i % 125 == 0 && i <= n - m) ? k_store + 1 : k_store;
-	}
-	printf("%d", store - n_store - k_store);
+	int a = search(x), b = search(y); if (a == b)return true;
+	if (level[a] > level[b]) { int tmp = a; a = b; b = tmp; }
+	arr[a] = b;
+	if (level[a] == level[b])level[b]++;
+	return false;
+}
+int main() {
+	cin.tie(NULL); cout.tie(NULL); ios::sync_with_stdio(false);
+	cin >> n >> m; for (int i = 0; i < n; i++) { arr[i] = i; level[i] = 1; }
+	for (int i = 1; i <= m; i++) { cin >> a >> b; if (merge(a, b)) { if (check == 0)check = i; } }
+	cout << check;
 	return 0;
 }
-//#define MIN3(a,b,c) ((((a)<(b))&&((a)<(c)))? (a) : (((b)<(c))?(b) : (c)))
-//#define MAX(a,b) (((a)>(b)) ? (a) : (b))
