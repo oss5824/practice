@@ -15,7 +15,7 @@ int main()
 		int s, e, d; cin >> s >> e >> d;
 		v[s].emplace_back(e, d); v[e].emplace_back(s, d);
 	}
-	queue<pair<int, pair<int, int>>>q;//��ġ, ��, �ִ�
+	queue<pair<int, pair<int, int>>>q;//À§Ä¡, ÇÕ, ÃÖ´ñ°ª
 	q.push({ S,{0,0} }); visit[S] = true;
 	while (!q.empty()) {
 		int cur = q.front().first, sum = q.front().second.first, len = q.front().second.second; q.pop();
